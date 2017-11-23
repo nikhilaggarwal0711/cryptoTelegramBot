@@ -113,24 +113,25 @@ def my_long_running_process():
                 DB.execute("""Delete from bittrex where fetchTime <= %s""", [deleteData] )
                 conn.commit()
 
-                lastOffset=0
+                lastOffSet=0
                 DB.execute("SELECT MAX(offSetId) from users")
-                lastOffset = DB.fetchall()
-                if lastOffset is None:
-                        lastOffset=-1
-                updates = TelegramBot.getUpdates(lastOffset+1)
+                lastOffSets = DB.fetchall()
+                for lastOffSet in lastOffSets:
+                    if lastOffSet is None:
+                        lastOffSet=-1
+                    updates = TelegramBot.getUpdates(lastOffSet[0]+1)
                 #print con.message
                 for update in updates:
                     print update
                     text = update["message"]["text"]
                     chatId = update["message"]["from"]["id"]
-                    lastOffset = update["update_id"]
+                    lastOffSet = update["update_id"]
                     if text == "/start" or text == "start":
                         DB.execute("SELECT * from users where chatId=%s",chatId)
                         data = DB.fetchall()
                         if data is None:
                             TelegramBot.sendMessage(chatId,"I have added you in my notification list. \nWhile my father is building my algorithm, I would like you to remain calm if I don't respond to your queries.");
-                            DB.execute("""INSERT INTO users (chatId, category, offSetId) VALUES (%s,%s,%s)""", chatId , "g" , lastOffset)
+                            DB.execute("""INSERT INTO users (chatId, category, offSetId) VALUES (%s,%s,%s)""", chatId , "g" , lastOffSet)
                             conn.commit()
                         else:
                             TelegramBot.sendMessage(chatId,"You are already there in my mind and will be notified whenever a new market is added. \nPlease don't poke me when I am learning new things.");
