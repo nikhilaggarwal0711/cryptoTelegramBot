@@ -117,9 +117,11 @@ def my_long_running_process():
                 DB.execute("SELECT MAX(offSetId) from users")
                 lastOffSets = DB.fetchall()
                 for lastOffSet in lastOffSets:
-                    if lastOffSet is None:
+                    if lastOffSet[0] is None:
                         lastOffSet=-1
-                    updates = TelegramBot.getUpdates(lastOffSet[0]+1)
+                    else:
+                        lastOffSet=lastOffSet[0]
+                    updates = TelegramBot.getUpdates(int(lastOffSet)+1)
                 #print con.message
                 for update in updates:
                     print update
@@ -127,15 +129,13 @@ def my_long_running_process():
                     chatId = update["message"]["from"]["id"]
                     lastOffSet = update["update_id"]
                     if text == "/start" or text == "start":
-                        DB.execute("SELECT * from users where chatId=%s",chatId)
-                        data = DB.fetchall()
-                        if data is None:
-                            TelegramBot.sendMessage(chatId,"I have added you in my notification list. \nWhile my father is building my algorithm, I would like you to remain calm if I don't respond to your queries.");
-                            DB.execute("""INSERT INTO users (chatId, category, offSetId) VALUES (%s,%s,%s)""", chatId , "g" , lastOffSet)
-                            conn.commit()
-                        else:
+                        rowsCount = DB.execute("""SELECT chatId from users where chatId=%s""",[chatId])
+                        if rowsCount > 0:
                             TelegramBot.sendMessage(chatId,"You are already there in my mind and will be notified whenever a new market is added. \nPlease don't poke me when I am learning new things.");
-
+                        else:
+                            TelegramBot.sendMessage(chatId,"I have added you in my notification list. \nWhile my father is building my algorithm, I would like you to remain calm if I don't respond to your queries.");
+                            DB.execute("""INSERT INTO users (chatId, category, offSetId) VALUES (%s,%s,%s)""", (chatId ,"g" , lastOffSet))
+                            conn.commit()
 
                 DB.execute("SELECT marketname,volume,bid,ask,openbuyorders,opensellorders FROM bittrex group by marketname having count(marketname)=1")
                 newMarkets = DB.fetchall()
