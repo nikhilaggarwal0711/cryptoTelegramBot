@@ -16,14 +16,14 @@ def my_long_running_process():
         }
         telepot.api._onetime_pool_spec = (urllib3.ProxyManager, dict(proxy_url=proxy_url, num_pools=1, maxsize=1, retries=False, timeout=30))
         #Old token :
-        #token = '506594994:AAG2AY7sTI7wwPtVm-Qm1SIGwOfDCHgH9d8'
-        token = "403982191:AAENVJ3KMrh0ZQzONMgxmm8WMVM8aojmLok"
+        token = '506594994:AAG2AY7sTI7wwPtVm-Qm1SIGwOfDCHgH9d8'
+        #token = "403982191:AAENVJ3KMrh0ZQzONMgxmm8WMVM8aojmLok"
         TelegramBot = telepot.Bot(token)
 
         # dir="/home/nikhilaggarwal/markets/"
         #os.chdir(dir)
         timer = 0
-        conn = MySQLdb.connect(host= "nikhilaggarwal.mysql.pythonanywhere-services.com",user="nikhilaggarwal",passwd="nikhil123agg",db="nikhilaggarwal$main")
+        conn = MySQLdb.connect(host= "nikhilaggarwal.mysql.pythonanywhere-services.com",user="nikhilaggarwal",passwd="nikhil123agg",db="nikhilaggarwal$test")
         DB = conn.cursor()
         while True:
                 if ( timer == 360 or timer == 0 ) :
@@ -128,6 +128,7 @@ def my_long_running_process():
                     text = update["message"]["text"]
                     chatId = update["message"]["from"]["id"]
                     lastOffSet = update["update_id"]
+                    firstName = update["message"]["from"]["first_name"]
                     if text == "/start" or text == "start":
                         rowsCount = DB.execute("""SELECT chatId from users where chatId=%s""",[chatId])
                         if rowsCount > 0:
@@ -136,7 +137,7 @@ def my_long_running_process():
                             conn.commit()
                         else:
                             TelegramBot.sendMessage(chatId,"I have added you in my notification list. \nFuture Upgrades : \n1. More Exchanges \n2. Provide Rank of newly added market \n3. Price Alerts \n4. Portfolio Tracker");
-                            DB.execute("""INSERT INTO users (chatId, category, offSetId, fetchTime) VALUES (%s,%s,%s,%s)""", (chatId ,"g" , lastOffSet, fetchTime))
+                            DB.execute("""INSERT INTO users (chatId, ,firstName, category, offSetId, fetchTime) VALUES (%s,%s,%s,%s,%s)""", (chatId ,firstName, "g" , lastOffSet, fetchTime))
                             conn.commit()
                             DB.execute("""INSERT INTO maxOffSet (offSetId) VALUES (%s)""", [lastOffSet])
                             conn.commit()
