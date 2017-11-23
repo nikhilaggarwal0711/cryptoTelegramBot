@@ -124,7 +124,7 @@ def my_long_running_process():
                     updates = TelegramBot.getUpdates(int(lastOffSet)+1)
                 #print con.message
                 for update in updates:
-                    print update
+                    #print update
                     text = update["message"]["text"]
                     chatId = update["message"]["from"]["id"]
                     lastOffSet = update["update_id"]
@@ -140,12 +140,15 @@ def my_long_running_process():
                 DB.execute("SELECT marketname,volume,bid,ask,openbuyorders,opensellorders FROM bittrex group by marketname having count(marketname)=1")
                 newMarkets = DB.fetchall()
                 market="Bittrex"
-                print newMarkets
+                #print newMarkets
                 DB.execute("SELECT distinct(chatId) from users where category=\"g\"")
                 chatIds = DB.fetchall()
+                #print chatIds
                 for chatId in chatIds:
+                    #print chatId[0]
                     for newMarket in newMarkets:
-                            TelegramBot.sendMessage(chatId,market + "\nNew Market Added\nMarket Name : "+str(newMarket[0])+"\nVolume : "+str(newMarket[1])+"\nBid : "+str(newMarket[2])+"\nAsk : "+str(newMarket[3])+"\nOpen Buy Orders : "+str(newMarket[4])+"\nOpen Sell Orders : "+str(newMarket[5]))
+                            #print "Sending message"
+                            TelegramBot.sendMessage(chatId[0],str(market) + "\nNew Market Added\nMarket Name : "+str(newMarket[0])+"\nVolume : "+str(newMarket[1])+"\nBid : "+str(newMarket[2])+"\nAsk : "+str(newMarket[3])+"\nOpen Buy Orders : "+str(newMarket[4])+"\nOpen Sell Orders : "+str(newMarket[5]))
 
                 timer = timer + 1
                 time.sleep(60)
