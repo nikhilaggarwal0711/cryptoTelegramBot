@@ -15,7 +15,9 @@ def my_long_running_process():
                 'default': urllib3.ProxyManager(proxy_url=proxy_url, num_pools=3, maxsize=10, retries=False, timeout=30),
         }
         telepot.api._onetime_pool_spec = (urllib3.ProxyManager, dict(proxy_url=proxy_url, num_pools=1, maxsize=1, retries=False, timeout=30))
-        token = '506594994:AAG2AY7sTI7wwPtVm-Qm1SIGwOfDCHgH9d8'
+        #Old token :
+        #token = '506594994:AAG2AY7sTI7wwPtVm-Qm1SIGwOfDCHgH9d8'
+        token = "403982191:AAENVJ3KMrh0ZQzONMgxmm8WMVM8aojmLok"
         TelegramBot = telepot.Bot(token)
 
         # dir="/home/nikhilaggarwal/markets/"
