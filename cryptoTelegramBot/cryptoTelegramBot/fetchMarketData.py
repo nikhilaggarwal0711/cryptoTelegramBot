@@ -131,9 +131,9 @@ def my_long_running_process():
                     if text == "/start" or text == "start":
                         rowsCount = DB.execute("""SELECT chatId from users where chatId=%s""",[chatId])
                         if rowsCount > 0:
-                            TelegramBot.sendMessage(chatId,"You are already there in my mind and will be notified whenever a new market is added. \nPlease don't poke me when I am learning new things.");
+                            TelegramBot.sendMessage(chatId,"I know its too long since any new market is added, but I am tracking and will keep you posted. Thanks for poking :) ");
                         else:
-                            TelegramBot.sendMessage(chatId,"I have added you in my notification list. \nWhile my father is building my algorithm, I would like you to remain calm if I don't respond to your queries.");
+                            TelegramBot.sendMessage(chatId,"I have added you in my notification list. \nFuture Upgrades : \n1. More Exchanges \n2. Provide Rank of newly added market \n3. Price Alerts \n4. Portfolio Tracker");
                             DB.execute("""INSERT INTO users (chatId, category, offSetId) VALUES (%s,%s,%s)""", (chatId ,"g" , lastOffSet))
                             conn.commit()
 
