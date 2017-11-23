@@ -114,7 +114,7 @@ def my_long_running_process():
                 conn.commit()
 
                 lastOffSet=0
-                DB.execute("SELECT MAX(offSetId) from users")
+                DB.execute("SELECT max(offSetId) from maxOffSet")
                 lastOffSets = DB.fetchall()
                 for lastOffSet in lastOffSets:
                     if lastOffSet[0] is None:
@@ -132,11 +132,15 @@ def my_long_running_process():
                         rowsCount = DB.execute("""SELECT chatId from users where chatId=%s""",[chatId])
                         if rowsCount > 0:
                             TelegramBot.sendMessage(chatId,"I know its too long since any new market is added, but I am tracking and will keep you posted. Thanks for poking :) ");
+                            DB.execute("""INSERT INTO maxOffSet (lastOffSet) VALUES (%s)""", (lastOffSet))
+                            conn.commit()
                         else:
                             TelegramBot.sendMessage(chatId,"I have added you in my notification list. \nFuture Upgrades : \n1. More Exchanges \n2. Provide Rank of newly added market \n3. Price Alerts \n4. Portfolio Tracker");
-                            DB.execute("""INSERT INTO users (chatId, category, offSetId) VALUES (%s,%s,%s)""", (chatId ,"g" , lastOffSet))
+                            DB.execute("""INSERT INTO users (chatId, category, offSetId, fetchTime) VALUES (%s,%s,%s,%s)""", (chatId ,"g" , lastOffSet, fetchTime))
                             conn.commit()
-
+                            DB.execute("""INSERT INTO maxOffSet (lastOffSet) VALUES (%s)""", (lastOffSet))
+                            conn.commit()
+                            
                 DB.execute("SELECT marketname,volume,bid,ask,openbuyorders,opensellorders FROM bittrex group by marketname having count(marketname)=1")
                 newMarkets = DB.fetchall()
                 market="Bittrex"
