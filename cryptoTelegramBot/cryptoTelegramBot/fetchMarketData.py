@@ -136,7 +136,7 @@ def my_long_running_process():
                                 DB.execute("""INSERT INTO maxOffSet (offSetId) VALUES (%s)""", [lastOffSet])
                                 conn.commit()
                             else:
-                                TelegramBot.sendMessage(chatId,"I have added you in my notification list. \nFuture Upgrades : \n1. More Exchanges \n2. Provide Rank of newly added market \n3. Price Alerts \n4. Portfolio Tracker");
+                                TelegramBot.sendMessage(chatId,"I have added you in my notification list. \nFuture Upgrades : \n1. More Exchanges \n2. Provide Rank of newly added market \n3. Price Alerts \n4. Portfolio Tracker\n5. FREE Money/Coins alerts");
                                 DB.execute("""INSERT INTO users (chatId, firstName, category, offSetId, fetchTime) VALUES (%s,%s,%s,%s,%s)""", (chatId ,firstName, "g" , lastOffSet, fetchTime))
                                 conn.commit()
                                 DB.execute("""INSERT INTO maxOffSet (offSetId) VALUES (%s)""", [lastOffSet])
